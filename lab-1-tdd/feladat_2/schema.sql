@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS todos;
+
+CREATE TABLE todos (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+task TEXT NOT NULL,
+done BIT NOT NULL -- 0 for false, 1 for true
+);
