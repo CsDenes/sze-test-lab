@@ -174,14 +174,6 @@ def handle_single_todo(todo_id):
     else:
         # If not found, return an error message with a 404 Not Found status
         return jsonify({"error": f"Todo with id {todo_id} not found"}), 404
-
-
-def _get_next_id():
-    """A helper function to get the next ID for a new todo."""
-    # If the list is empty, start with ID 1. Otherwise, find the max ID and add 1.
-    if not todos:
-        return 1
-    return max(todo['id'] for todo in todos) + 1
 ```
 
 Mit adtunk hozzá:
