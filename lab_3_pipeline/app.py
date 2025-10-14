@@ -52,7 +52,7 @@ def handle_single_todo(todo_id):
         
     if request.method == 'GET':
         # MISTAKE 6
-        return jsonify(todos), 200
+        return jsonify(todo), 200
 
     if request.method == 'PUT':
         if not request.json:
@@ -60,7 +60,7 @@ def handle_single_todo(todo_id):
         
         # MISTAKE 7
         todo['task'] = request.json.get('task', todo['task'])
-        todo['done'] = False
+        todo['done'] = True
         return jsonify(todo), 200
 
     if request.method == 'DELETE':
