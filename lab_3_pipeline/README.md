@@ -59,13 +59,13 @@ A projekt gyökérkönyvtárában hozd létre a .github/workflows/ mappaszerkeze
 
 - Hozd létre a `job`-ot
 
-- 1. lépés hozzáadása ami letölti a repository kódját
+1. lépés hozzáadása ami letölti a repository kódját
 
-- 2. lépés hozzáadása ami beállítja a python-t (`actions/setup-python@v4`)
+2. lépés hozzáadása ami beállítja a python-t (`actions/setup-python@v4`)
 
-- 3. lépés a függőségek telepítése (`pip install -r requirements.txt`)
+3. lépés a függőségek telepítése (`pip install -r requirements.txt`)
 
-- 4. lépés a tesztek futtatása
+4. lépés a tesztek futtatása
 
 4. Státusz-jelvény (Status Badge) hozzáadása
 

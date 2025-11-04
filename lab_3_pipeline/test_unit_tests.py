@@ -1,61 +1,33 @@
-from flask import Flask, jsonify, request
+import pytest
+from lab_3_pipeline.app import app as flask_app
 
-app = Flask(__name__)
+@pytest.fixture
+def app():
+    yield flask_app
 
-# In-memory data store
-todos = [
-    {"id": 1, "task": "Learn TDD", "done": False},
-    {"id": 2, "task": "Build a Flask API", "done": True},
-]
+@pytest.fixture
+def client(app):
+    return app.test_client()
 
-@app.route('/')
-def index():
-    return "Welcome"
+def test_index(client):
+    """Test the root endpoint."""
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b"Welcome" in response.data
 
-@app.route('/todos' , methods=['GET', 'POST'])
-def handle_todos():
-    if request.method == 'POST':
-        if not request.json or 'task' not in request.json:
-            return jsonify({"error": "Missing task data"}), 400
-        new_todo = {
-            'id': _get_next_id(),
-            'task': request.json['task'],
-            'done': False
-        }
-        todos.append(new_todo)
-        return jsonify(new_todo), 201
-    if request.method == 'GET':
-        return jsonify(todos)
-    
-    return "error"
+def test_get_todos(client):
+    """Test fetching all to-do items from the database."""
+    response = client.get('/todos')
+    assert response.status_code == 200
+    assert response.is_json
+    # We added 2 items in the fixture, so we expect to get them back
+    assert len(response.json) == 2
 
-@app.route('/todos/<int:todo_id>', methods=['GET', 'PUT', 'DELETE'])
-def handle_single_todo(todo_id):
-    """
-    Handles GET, PUT, and DELETE requests for a single to-do item by its ID.
-    """
-    todo = next((item for item in todos if item["id"] == todo_id), None)
-    
-    if not todo:
-        return jsonify({"error": f"Todo with id {todo_id} not found"}), 404
-        
-    if request.method == 'GET':
-        return jsonify(todo), 200
+def test_add_todo(client):
+    new_todo = {'task': 'Learn Pytest'}
+    response = client.post('/todos', json=new_todo)
+    assert response.status_code == 201
 
-    if request.method == 'DELETE':
-        todos.remove(todo)
-        return '', 204
-
-    if request.method == 'PUT':
-        if not request.json:
-            return jsonify({"error": "Missing JSON body"}), 400
-        
-        todo.update(request.json)
-        return jsonify(todo), 200
-
-
-def _get_next_id():
-    """A helper function to get the next ID for a new todo."""
-    if not todos:
-        return 1
-    return max(todo['id'] for todo in todos) + 1
+    get_response = client.get('/todos')
+    assert get_response.status_code == 200
+    assert len(get_response.json) == 3

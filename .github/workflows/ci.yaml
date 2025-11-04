@@ -1,29 +1,40 @@
 name: Python Test and Status Pipeline
 
+# Controls when the workflow will run
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
+
+defaults:
+ run:
+  working-directory: ./lab_4_api_tests
 
 jobs:
+  # This job is named "test"
   test:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./lab_3_pipeline
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
-      - name: Set up Python
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Step 1: Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Sets up a single, specific version of Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: '3.12'
+          cache: 'pip' # Caches dependencies to speed up future runs
 
+      # Step 3: Installs the project dependencies from requirements.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests
+      # Step 4: Runs the pytest command to execute all tests
+      - name: Run tests with pytest
         run: |
-          pytest
+          pytest -v
